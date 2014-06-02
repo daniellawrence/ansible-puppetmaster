@@ -1,0 +1,9 @@
+---
+:backends:
+  - yaml
+:hierarchy:
+  - "%{::environment}/%{::clientcert}"
+  - "%{::environment}/%{::environment}"
+  - "%{::environment}/common"
+:yaml:
+  :datadir: /etc/puppet/environments/

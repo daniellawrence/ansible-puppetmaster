@@ -1,0 +1,63 @@
+- hosts: all
+  vars:
+    puppet_download: http://apt.puppetlabs.com/puppetlabs-release-precise.deb 
+    puppet_name: puppetlabes-release-precise
+    download_folder: /var/tmp
+    puppet_archive: "{{download_folder}}/{{puppet_name}}.deb"
+    
+  tasks:
+  - name: Install wget
+    apt: "pkg=wget"
+  - name: Download the Puppet repo package
+    command: "wget -q -O {{puppet_archive}} {{puppet_download}} creates={{puppet_archive}}"
+  - name: Install the puppet repo package
+    apt: "deb={{ puppet_archive }}"
+    sudo: yes
+  - name: Update apt-cache
+    apt: "update_cache=yes"
+    sudo: yes
+  - name: Install all the required packaes for a puppetmaster
+    apt: "pkg={{item}} state=present"
+    sudo: yes
+    with_items: [
+      "puppetmaster",
+      "puppetdb",
+      "hiera",
+      "facter",
+      "puppetdb-terminus",
+      "rubygems"
+      ]
+  - name: install r10k
+    gem: name=r10k state=latest
+    sudo: yes
+  - name: puppetdb ssl-setup
+    command: puppetdb ssl-setup creates="/etc/puppetdb/ssl"
+    sudo: yes
+  - name: Install default hiera.conf
+    template: src=hiera.conf.j2 dest=/etc/puppet/hiera.conf owner=root group=root mode=0644
+    sudo: yes
+  - name: Install default puppet.conf
+    template: src=puppet.conf.j2 dest=/etc/puppet/puppet.conf owner=root group=root mode=0644
+    sudo: yes
+  - name: Install default puppetdb.conf
+    template: src=puppetdb.conf.j2 dest=/etc/puppet/puppetdb.conf owner=root group=root mode=0644
+    sudo: yes
+  - name: Install default routes.yaml
+    template: src=routes.yaml.j2 dest=/etc/puppet/routes.yaml owner=root group=root mode=0644
+    sudo: yes
+  - name: Install default r10k.yaml
+    template: src=r10k.yaml.j2 dest=/etc/r10k.yaml owner=root group=root mode=0644
+    sudo: yes
+  - name: r10k deploy
+    command: r10k deploy environment creates="/etc/puppet/environments/master"
+    sudo: yes
+      
+  - name: Start all the services.
+    service: "name={{item}} state=restarted"
+    sudo: yes
+    with_items: [
+      "puppetmaster",
+      "puppetdb",
+    ]
+      
+    
