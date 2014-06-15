@@ -1,8 +1,8 @@
 - hosts: all
   gather_facts: yes   
   vars:
-    puppet_download: http://apt.puppetlabs.com/puppetlabs-release-trusty.deb 
-    puppet_name: puppetlabes-release-trusty
+    puppet_download: http://apt.puppetlabs.com/puppetlabs-release
+    puppet_name: puppetlabes-release
     download_folder: /var/tmp
     puppet_archive: "{{download_folder}}/{{puppet_name}}.deb"
     
@@ -10,7 +10,7 @@
   - name: Install wget
     apt: "pkg=wget"
   - name: Download the Puppet repo package
-    command: "wget -q -O {{puppet_archive}} {{puppet_download}} creates={{puppet_archive}}"
+    command: "wget -q -O {{puppet_archive}} {{puppet_download}}-{{ansible_distribution_release}} creates={{puppet_archive}}"
   - name: Install the puppet repo package
     apt: "deb={{ puppet_archive }}"
     sudo: yes
