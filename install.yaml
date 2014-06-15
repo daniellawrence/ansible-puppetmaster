@@ -1,22 +1,47 @@
 - hosts: all
   gather_facts: yes   
   vars:
-    puppet_download: http://apt.puppetlabs.com/puppetlabs-release
+    puppet_download: http://{{ansible_pkg_mgr}}.puppetlabs.com/puppetlabs-release
     puppet_name: puppetlabes-release
     download_folder: /var/tmp
-    puppet_archive: "{{download_folder}}/{{puppet_name}}.deb"
+    puppet_archive: "{{download_folder}}/{{puppet_name}}"
     
   tasks:
-  - name: Install wget
+    # Install wget from pacakge manager
+  - name: Install wget - apt
     apt: "pkg=wget"
-  - name: Download the Puppet repo package
+    when: ansible_os_family == "Debian" or "Ubuntu"
+  - name: Install wget - yum
+    yum: "name=wget"
+    when: ansible_os_family == "Redhat" or "Fedora"
+
+    # Download the puppet module
+  - name: Download the Puppet repo package - apt
     command: "wget -q -O {{puppet_archive}} {{puppet_download}}-{{ansible_distribution_release}} creates={{puppet_archive}}"
-  - name: Install the puppet repo package
-    apt: "deb={{ puppet_archive }}"
+    when: ansible_os_family == "Debian" or "Ubuntu"
+  - name: Download the Puppet repo package - Fedora
+    command: "wget -q -O {{puppet_archive}}.rpm {{puppet_download}}-{{ansible_os_family}}-{{major_release}}.noarch creates={{puppet_archive}}"
+    when: ansible_os_family == "Fedora"
+  - name: Download the Puppet repo package - Redhat
+    command: "wget -q -O {{puppet_archive}}.rpm {{puppet_download}}-el-{{major_release}}.noarch creates={{puppet_archive}}"
+    when: ansible_os_family == "Redhat"
+
+    # Install teh puppet package
+  - name: Install the puppet repo package - apt
+    apt: "deb={{puppet_archive}}"
     sudo: yes
+    when: ansible_os_family == "Debian" or "Ubuntu"
+  - name: Install the puppet repo package - rpm
+    yum: "name={{puppet_archive}}.rpm state=present"
+    sudo: yes
+    when: ansible_os_family == "Fedora" or "Redhat"
+
   - name: Update apt-cache
     apt: "update_cache=yes"
     sudo: yes
+    when: ansible_os_family == "Debian" or "Ubuntu"
+
+
   - name: Install all the required packaes for a puppetmaster
     apt: "pkg={{item}} state=present"
     sudo: yes
@@ -27,6 +52,17 @@
       "facter",
       "puppetdb-terminus",
       ]
+  - name: Install all the required packaes for a puppetmaster
+    yum: "name={{item}} state=present"
+    sudo: yes
+    with_items: [
+      "puppetmaster",
+      "puppetdb",
+      "hiera",
+      "facter",
+      "puppetdb-terminus",
+      ]
+
   - name: install r10k
     gem: name=r10k state=latest
     sudo: yes
