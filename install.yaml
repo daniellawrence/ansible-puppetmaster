@@ -1,7 +1,8 @@
 - hosts: all
+  gather_facts: yes   
   vars:
-    puppet_download: http://apt.puppetlabs.com/puppetlabs-release-precise.deb 
-    puppet_name: puppetlabes-release-precise
+    puppet_download: http://apt.puppetlabs.com/puppetlabs-release-trusty.deb 
+    puppet_name: puppetlabes-release-trusty
     download_folder: /var/tmp
     puppet_archive: "{{download_folder}}/{{puppet_name}}.deb"
     
