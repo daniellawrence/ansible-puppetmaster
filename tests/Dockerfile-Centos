@@ -1,0 +1,22 @@
+FROM centos:6.4
+
+# Install ssh
+RUN yum install -y openssh-server
+
+# Setting ssh
+RUN mkdir -p /var/run/sshd
+RUN /usr/sbin/sshd
+EXPOSE 22
+
+# Creating user and setting its password
+RUN echo root:pass | chpasswd
+
+# Setting ssh login without password
+RUN mkdir -p /root/.ssh
+RUN chmod 700 /root/.ssh
+ADD id_rsa.pub /root/.ssh/authorized_keys
+RUN chmod 600 /root/.ssh/authorized_keys
+
+# startup the sshd process
+ADD init.sh /usr/bin/init.sh
+CMD ["/usr/bin/init.sh"]
