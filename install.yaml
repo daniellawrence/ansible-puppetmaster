@@ -25,7 +25,6 @@
       "hiera",
       "facter",
       "puppetdb-terminus",
-      "rubygems"
       ]
   - name: install r10k
     gem: name=r10k state=latest
