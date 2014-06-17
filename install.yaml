@@ -14,17 +14,15 @@
   - name: Install wget [apt]
     apt: "pkg=wget"
     when: ansible_os_family  == "Debian"
-  - name: Install wget [yum]
-    yum: "pkg=wget"
-    when: ansible_os_family  == "RedHat" or ansible_os_family  == "Centos"
   - name: Download the Puppet repo package
     command: "wget -q -O {{puppet_archive}} {{puppet_download}}-{{ansible_distribution_release}} creates={{puppet_archive}}"
+    when: ansible_os_family  == "Debian"
   - name: Install the puppet repo package [apt]
     apt: "deb={{ puppet_archive }}"
     sudo: yes
     when: ansible_os_family  == "Debian"
   - name: Install the puppet repo package [yum]
-    yum: "rpm={{ puppet_archive }}"
+    yum: "name=http://yum.puppetlabs.com/puppetlabs-release-el-6.noarch.rpm"
     sudo: yes
     when: ansible_os_family  == "RedHat" or ansible_os_family  == "Centos"
   - name: Update apt-cache
