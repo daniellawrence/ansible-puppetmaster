@@ -7,17 +7,31 @@
     puppet_archive: "{{download_folder}}/{{puppet_name}}.deb"
     
   tasks:
-  - name: Install wget
+  - name: Update apt-cache [apt]
+    apt: "update_cache=yes"
+    sudo: yes
+    when: ansible_os_family  == "Debian" 
+  - name: Install wget [apt]
     apt: "pkg=wget"
+    when: ansible_os_family  == "Debian"
+  - name: Install wget [yum]
+    yum: "pkg=wget"
+    when: ansible_os_family  == "RedHat" or ansible_os_family  == "Centos"
   - name: Download the Puppet repo package
     command: "wget -q -O {{puppet_archive}} {{puppet_download}}-{{ansible_distribution_release}} creates={{puppet_archive}}"
-  - name: Install the puppet repo package
+  - name: Install the puppet repo package [apt]
     apt: "deb={{ puppet_archive }}"
     sudo: yes
+    when: ansible_os_family  == "Debian"
+  - name: Install the puppet repo package [yum]
+    yum: "rpm={{ puppet_archive }}"
+    sudo: yes
+    when: ansible_os_family  == "RedHat" or ansible_os_family  == "Centos"
   - name: Update apt-cache
     apt: "update_cache=yes"
     sudo: yes
-  - name: Install all the required packaes for a puppetmaster
+    when: ansible_os_family  == "Debian"
+  - name: Install all the required packaes for a puppetmaster [apt]
     apt: "pkg={{item}} state=present"
     sudo: yes
     with_items: [
@@ -27,6 +41,18 @@
       "facter",
       "puppetdb-terminus",
       ]
+    when: ansible_os_family  == "Debian"
+  - name: Install all the required packaes for a puppetmaster [yum]
+    yum: "pkg={{item}} state=present"
+    sudo: yes
+    with_items: [
+      "puppetmaster",
+      "puppetdb",
+      "hiera",
+      "facter",
+      "puppetdb-terminus",
+      ]
+    when: ansible_os_family  == "RedHat" or ansible_os_family  == "Centos"
   - name: install r10k
     gem: name=r10k state=latest
     sudo: yes
