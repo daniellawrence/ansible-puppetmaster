@@ -41,10 +41,10 @@
       ]
     when: ansible_os_family  == "Debian"
   - name: Install all the required packaes for a puppetmaster [yum]
-    yum: "pkg={{item}} state=present"
+    yum: "name={{item}} state=present"
     sudo: yes
     with_items: [
-      "puppetmaster",
+      "puppet-server",
       "puppetdb",
       "hiera",
       "facter",
