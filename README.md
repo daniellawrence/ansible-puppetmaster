@@ -3,6 +3,23 @@ Ansible-puppetmaster
 
 Install and configure puppetmaster via ansible!
 
+Actions
+--------
+
+Everything that will get a real puppetmaster up and running.
+
+* Install
+** puppet-master (3.6.2)
+** puppetdb & puppetdb-terinus (2.0.0)
+** hiera (1.3.4)
+** facter (2.0.2)
+** r10k (1.2.1)
+** git
+* Configure puppetmater
+** with puppetdb via ssl (:8081)
+** hieradata in /etc/puppet/environments
+** r10k will sync hieradata
+
 Installing
 ------------
 
