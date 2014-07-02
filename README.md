@@ -9,16 +9,16 @@ Actions
 Everything that will get a real puppetmaster up and running.
 
 * Install
-** puppet-master (3.6.2)
-** puppetdb & puppetdb-terinus (2.0.0)
-** hiera (1.3.4)
-** facter (2.0.2)
-** r10k (1.2.1)
-** git
+* * puppet-master (3.6.2)
+* * puppetdb & puppetdb-terinus (2.0.0)
+* * hiera (1.3.4)
+* * facter (2.0.2)
+* * r10k (1.2.1)
+* * git
 * Configure puppetmater
-** with puppetdb via ssl (:8081)
-** hieradata in /etc/puppet/environments
-** r10k will sync hieradata
+* * with puppetdb via ssl (:8081)
+* * hieradata in /etc/puppet/environments
+* * r10k will sync hieradata
 
 Installing
 ------------
@@ -38,9 +38,9 @@ Install a puppetmaster on a node called 'puppet' (change the hosts.ini)
 Testing
 ---------
 
-The tests assume that you habe ansible and docker install on your local machine.
-by running `./tests/run_tests.sh` a new machine will be created and ansible will
-take over and install the puppetmaster.
+The tests assume that you have ansible and docker installed on your
+local machine.  By running `./tests/run_tests.sh` a new machine
+will be created and ansible will take over and install the puppetmaster.
 
 The `ubuntu:14.04` is also assumed to be installed locally.
 
