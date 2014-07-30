@@ -85,6 +85,8 @@
   - name: r10k deploy
     command: r10k deploy environment creates="/etc/puppet/environments/master"
     sudo: yes
+  - name: install puppet-lint
+    gem: name=puppet-lint
       
   - name: Start all the services.
     service: "name={{item}} state=restarted"

@@ -15,6 +15,7 @@ Install
 * facter (2.0.2)
 * r10k (1.2.1)
 * git
+* puppet-lint
 
 Configure puppetmater
 * with puppetdb via ssl (:8081)
