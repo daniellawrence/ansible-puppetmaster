@@ -87,7 +87,7 @@
     sudo: yes
   - name: install puppet-lint
     gem: name=puppet-lint
-      
+    sudo: yes  
   - name: Start all the services.
     service: "name={{item}} state=restarted"
     sudo: yes
